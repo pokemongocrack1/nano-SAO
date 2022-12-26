@@ -21787,7 +21787,7 @@ class S1 {
         return this.id == 15
     }
     get inSelfTeam() {
-        return Z.teamPlayers.size && Z.team == this.owner.team
+        return this.owner._tripkey ? this._nick+" ["+this.owner._tripkey+"]" : this._nick
     }
     get nick() {
         return this._nick
