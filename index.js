@@ -21787,10 +21787,10 @@ class S1 {
         return this.id == 15
     }
     get inSelfTeam() {
-        return this.owner._tripkey ? this._nick+" ["+this.owner._tripkey+"]" : this._nick
+        return Z.teamPlayers.size && Z.team == this.owner.team
     }
     get nick() {
-        return this._nick
+        return this.owner._tripkey ? this._nick+" ["+this.owner._tripkey+"]" : this._nick
     }
     set nick(t) {
         this._nick !== t && (this._nick = t, this.updateText(), this.pcells.forEach(i => i.setNick()))
