@@ -21810,10 +21810,8 @@ class R1 {
     get inSelfTeam() {
         return Z.teamPlayers.size && Z.team == this.owner.team
     }
-    get nick() {
-        return this.owner._tripkey ? this._nick+" ["+this.owner._tripkey+"]" : this._nick
-    }
-    set nick(t)
+    get nick() { return this.owner._tripkey ? this._nick+" ["+this.owner._tripkey+"]" : this._nick }
+    set nick(t) {
         this._nick !== t && (this._nick = t, this.updateText(), this.pcells.forEach(i => i.setNick()))
     }
     get tag() {
