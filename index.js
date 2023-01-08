@@ -21393,7 +21393,7 @@ class $d extends zd {
         this.opUnit.hasSkin && this.skinVisibility ? (this.baseLayer.texture = this.opUnit.skinTexture, this.deploySkinStyle()) : (this.baseLayer.texture = oe.get("BASE"), this.deployEntityStyle())
     }
     deployNickVisibility() {
-        !this.opUnit || (this.tag.visible = this.player.team.tagText && this.nickVisibility && G.TagType == 2, this.nick.visible = this.opUnit.nick && this.nickVisibility, this.mass.position.set(0, this.nick.visible ? Ge * .45 : 0), this.nick.position.set(0, this.tag.visible ? Ge * .05 : 0))
+        !this.opUnit || (this.tag.visible = this.player.team.tagText && this.nickVisibility && G.TagType == 2, this.nick.visible = this.opUnit.nickText.text && this.nickVisibility, this.mass.position.set(0, this.nick.visible ? Ge * .45 : 0), this.nick.position.set(0, this.tag.visible ? Ge * .05 : 0))
     }
     deployEntityStyle() {
         this.baseLayer.tint = this.entityTint, this.baseLayer.alpha = this.entityAlpha
@@ -30477,7 +30477,7 @@ const bL = {
                 id: At,
                 msg: Ct
             }) {
-                if (console.log(1), rt == 3) return;
+                if (rt == 3) return;
                 let Gt, Bt, Qt;
                 At === 0 ? Gt = "" : (Qt = Ut.get(At), Gt = Qt.tagNick, Bt = Lr(Qt));
                 const Vt = [wc(), rt, Gt, Bt, Ct, Qt];
@@ -30611,7 +30611,7 @@ const bL = {
             }
         }
     },
-    ya = e => (Wi("data-v-fd98dcd8"), e = e(), Yi(), e),
+    ya = e => (Wi("data-v-36e688fb"), e = e(), Yi(), e),
     xL = {
         id: "chat-room",
         ref: "box"
@@ -30794,7 +30794,7 @@ function HL(e, t, i, s, n, r) {
 }
 var VL = le(bL, [
     ["render", HL],
-    ["__scopeId", "data-v-fd98dcd8"]
+    ["__scopeId", "data-v-36e688fb"]
 ]);
 const zL = {
     name: "hint",
