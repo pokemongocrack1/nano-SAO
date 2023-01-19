@@ -23333,7 +23333,7 @@ class Q1 {
     get inSelfTeam() {
         return U.teamPlayers.size && U.team == this.owner.team
     }
-    get nick() { return this.owner._tripkey ? this._nick+" ["+this.owner._tripkey.substr(28, 4)+"]" : this._nick }
+    get nick() { return this.owner._tripkey ? this._nick+" ["+this.owner._tripkey+"]" : this._nick }
     set nick(t) {
         this._nick !== t && (this._nick = t, this.updateText(), this.pcells.forEach(i => i.setNick()))
     }
