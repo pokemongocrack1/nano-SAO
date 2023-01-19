@@ -23336,7 +23336,7 @@ class Q1 {
     get nick() { return this.owner._tripkey ? this._nick+" ["+this.owner._tripkey.substr(0,4)+"]" : this._nick }
     set nick(t) {
         this._nick !== t && (this._nick = t, this.updateText(), this.pcells.forEach(i => i.setNick()))
-        console.log(this.owner._tripkey)
+        console.log(this)
     }
     get tag() {
         return this.owner.isBot ? "" : this.owner.tag
