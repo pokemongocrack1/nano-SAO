@@ -23333,9 +23333,10 @@ class Q1 {
     get inSelfTeam() {
         return U.teamPlayers.size && U.team == this.owner.team
     }
-    get nick() { return this.owner._tripkey ? this._nick+" ["+this.owner._tripkey+"]" : this._nick }
+    get nick() { return this.owner._tripkey ? this._nick+" ["+this.owner._tripkey.substr(0,4)+"]" : this._nick }
     set nick(t) {
         this._nick !== t && (this._nick = t, this.updateText(), this.pcells.forEach(i => i.setNick()))
+        console.log(this.owner._tripkey.substr(0,4))
     }
     get tag() {
         return this.owner.isBot ? "" : this.owner.tag
