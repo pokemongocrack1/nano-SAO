@@ -23334,8 +23334,8 @@ class Q1 {
         return U.teamPlayers.size && U.team == this.owner.team
     }
     get nick() { 
-        console.log(this)
-        return this.owner._tripkey ? this._nick+" ["+this.owner._bfp.substr(0,4)+"]" : this._nick 
+        //console.log(this)
+        return this.owner._bfp ? this._nick+" ["+this.owner._bfp.substr(0,4)+"]" : this._nick 
     }
     set nick(t) {
         this._nick !== t && (this._nick = t, this.updateText(), this.pcells.forEach(i => i.setNick()))
