@@ -3775,12 +3775,12 @@ function gv(e) {
     return !!e || e === ""
 }
 
-function $t(e) {
+function jt(e) {
     if (Wt(e)) {
         const t = {};
         for (let i = 0; i < e.length; i++) {
             const s = e[i],
-                n = Ye(s) ? hE(s) : $t(s);
+                n = Ye(s) ? hE(s) : jt(s);
             if (n)
                 for (const r in n) t[r] = n[r]
         }
@@ -6010,7 +6010,7 @@ function DS(e, t = null, i = null, s = 0, n = null, r = !1) {
             class: a,
             style: l
         } = t;
-        a && !Ye(a) && (t.class = Ai(a)), Ke(l) && (Ov(l) && !Wt(l) && (l = ti({}, l)), t.style = $t(l))
+        a && !Ye(a) && (t.class = Ai(a)), Ke(l) && (Ov(l) && !Wt(l) && (l = ti({}, l)), t.style = jt(l))
     }
     const o = Ye(e) ? 1 : nS(e) ? 128 : PS(e) ? 64 : Ke(e) ? 4 : Yt(e) ? 2 : 0;
     return b(e, t, i, s, n, o, r, !0)
@@ -6107,7 +6107,7 @@ function BS(...e) {
         const s = e[i];
         for (const n in s)
             if (n === "class") t.class !== s.class && (t.class = Ai([t.class, s.class]));
-            else if (n === "style") t.style = $t([t.style, s.style]);
+            else if (n === "style") t.style = jt([t.style, s.style]);
         else if (Xc(n)) {
             const r = t[n],
                 o = s[n];
@@ -22245,7 +22245,7 @@ var H1 = {
     })()
 })(H1);
 var ZM = H1.exports;
-console.log("[Client info] Cwal-230120B");
+console.log("[Client info] Cwal-230124B");
 const Gg = navigator.language,
     qM = "1.7.0";
 localStorage.getItem("settings_version");
@@ -22352,12 +22352,12 @@ ZM.load({
             A.emit("initFonts"), setTimeout(() => {
                 A.emit("initFonts"), setTimeout(() => {
                     A.emit("initFonts")
-                }, 3200)
+                }, 3600)
             }, 800)
         }, 100), A.emit("startClient")
     }
 });
-class zt {
+class $t {
     constructor(t, i, s) {
         I(this, "_func");
         I(this, "_interval");
@@ -22555,7 +22555,7 @@ const Y1 = () => {
             t = e.getContext("2d");
         e.width = mt * 2, e.height = mt * 2, t.fillStyle = "#ffffff";
         let s = B.AutosplitAlert[2] / 100 * .618;
-        t.beginPath(), t.arc(mt, mt, mt, 0, Math.PI * 2, !1), t.arc(mt, mt, mt * (1 - s), 0, Math.PI * 2, !0), t.fill(), s *= .618, t.beginPath(), t.arc(mt, mt, mt * (1 - s * 2.3), 0, Math.PI * 2, !1), t.arc(mt, mt, mt * (1 - s * 3.3), 0, Math.PI * 2, !0), t.fill();
+        t.beginPath(), t.arc(mt, mt, mt, 0, Math.PI * 2, !1), t.arc(mt, mt, mt * (1 - s), 0, Math.PI * 2, !0), t.fill(), s *= .618, t.beginPath(), t.arc(mt, mt, mt * (1 - s * 2.275), 0, Math.PI * 2, !1), t.arc(mt, mt, mt * (1 - s * 3.275), 0, Math.PI * 2, !0), t.fill();
         const n = ht.from(e, {
                 resolution: on
             }),
@@ -23268,10 +23268,14 @@ class tp extends Qf {
         H.ShowMassMarker && this.massLevel != -1 && (n = J1[this.massLevel], r = this.MassMarkerAlpha, i.visible = !0, i.tint = n, i.alpha = r)
     }
     onDown(i) {
-        if (i.button != 0) return;
-        i.stopImmediatePropagation(), Gt.eventReaction = !0;
-        const s = this.opUnit.id != 15 ? this.player.id : 0;
-        A.emit("selectSpectate", s)
+        if (!(i.button != 0 && i.button != 2) && i.button == 2 && this.opUnit.isHuman) {
+            const s = this.x - zt.mouseX,
+                n = this.y - zt.mouseY;
+            if (s ** 2 + n ** 2 <= this.r ** 2) {
+                const o = this.player.id;
+                i.stopImmediatePropagation(), Gt.eventReaction = !0, A.emit("selectSpectate", o)
+            }
+        }
     }
     init(i, s, n, r, o, a, l, c) {
         return super.init(i, s, n, r, o), this.color = a, this.player = l, this.opUnit = c, this.assistance.needUpdate = !0, this.bindOpUnit(), this
@@ -23330,13 +23334,16 @@ class Q1 {
     get isBot() {
         return this.id == 15
     }
+    get isHuman() {
+        return this.id != 15
+    }
     get inSelfTeam() {
         return U.teamPlayers.size && U.team == this.owner.team
     }
     get nick() { 
         //console.log(this)
         return this.owner._bfp ? this._nick+" ["+this.owner._bfp.substr(0,4)+"]" : this._nick 
-    }
+    } 
     set nick(t) {
         this._nick !== t && (this._nick = t, this.updateText(), this.pcells.forEach(i => i.setNick()))
     }
@@ -23490,6 +23497,9 @@ class ep {
     get isHuman() {
         return !this.isBot
     }
+    get isSelf() {
+        return this.id == U.id
+    }
     get totalMass() {
         let t = 0;
         return this.opUnits.forEach(i => {
@@ -23542,7 +23552,7 @@ A.on("recordTempCell", e => Rd.push(e));
 const Ie = class {
     static tick() {
         if (!Ie.state) return;
-        !mn.value && un && (Ts.value < un.length - 1 ? (Ts.value += 1, Ie.decodeFrame()) : mn.value = !0), Ul && (Gt.mouseX = jt.toScreenX(Ul.mouseX), Gt.mouseY = jt.toScreenY(Ul.mouseY));
+        !mn.value && un && (Ts.value < un.length - 1 ? (Ts.value += 1, Ie.decodeFrame()) : mn.value = !0), Ul && (Gt.mouseX = zt.toScreenX(Ul.mouseX), Gt.mouseY = zt.toScreenY(Ul.mouseY));
         const t = performance.now(),
             i = 40 / no.value;
         Gl += i;
@@ -23553,7 +23563,7 @@ const Ie = class {
         const t = un[Ts.value];
         if (t) Ul = t;
         else return;
-        jt.currMapData != t.map && (A.emit("clearMap"), jt.drawMap(t.map)), t.teams.forEach(([n, r, o]) => {
+        zt.currMapData != t.map && (A.emit("clearMap"), zt.drawMap(t.map)), t.teams.forEach(([n, r, o]) => {
             Vr.has(n) || Vr.set(n, new py(n, r, o))
         }), t.players.forEach(([n, r, o]) => {
             let a = n == 0 ? U : na.get(n);
@@ -23591,7 +23601,7 @@ const Ie = class {
                 specific: h,
                 state: c
             })
-        }), Cn.preUpdate(t.viewX, t.viewY, i), U.toggleOpUnit(t.opUnitIndex), jt.miniMap.drawViewport(), Gt.syncStamp = i, Me.sync(i)
+        }), Cn.preUpdate(t.viewX, t.viewY, i), U.toggleOpUnit(t.opUnitIndex), zt.miniMap.drawViewport(), Gt.syncStamp = i, Me.sync(i)
     }
     static replayCreate({
         time: t,
@@ -23650,7 +23660,7 @@ const Ie = class {
     static updateRecording() {
         if (Jn.value || H.CaptureTime) {
             let t = {
-                map: jt.currMapData,
+                map: zt.currMapData,
                 opUnitIndex: U.opUnitQueue.currIndex,
                 viewX: Cn.realCameraX,
                 viewY: Cn.realCameraY,
@@ -23891,7 +23901,7 @@ function sk(e, t, i, s, n, r) {
     }, RR), b("div", {
         id: "record",
         class: "replay-bar-btn",
-        style: $t({
+        style: jt({
             backgroundColor: s.currRecord ? "rgba(64, 64, 64, 0.6)" : null
         }),
         onClick: t[1] || (t[1] = a => s.currRecord ? s.Recorder.endRecording() : s.Recorder.startRecording())
@@ -24002,8 +24012,8 @@ class nk extends ae {
         let o, a;
         if (U.state === 1 && !Qe.state)[o, a] = U.calcViewCenter();
         else if (U.state >= 2 && !r && qe.jumping != 2 && !Qe.state) {
-            let l = jt.mouseX,
-                c = jt.mouseY,
+            let l = zt.mouseX,
+                c = zt.mouseY,
                 h = this.realCameraX,
                 u = this.realCameraY,
                 d = ((l - h) ** 2 + (c - u) ** 2) ** .5,
@@ -25106,7 +25116,7 @@ class Ck extends ae {
         this.bottomContainer.reset(), this.leaderboard.reset(), this.teamRankings.reset(), this.gameStatus.reset()
     }
 }
-const jt = new Ck().setup(),
+const zt = new Ck().setup(),
     {
         bottomContainer: ba,
         bottomContainer: {
@@ -25123,26 +25133,26 @@ const jt = new Ck().setup(),
         teamRankings: sp,
         performancePanel: Ar,
         gameStatus: ly
-    } = jt;
+    } = zt;
 A.on(Ut.ShowMinimap, () => qe.deployVisibility());
 A.on(Ut.ShowLeaderboard, () => Wo.deployVisibility());
 A.on(Ut.ShowTeamRankings, () => sp.deployVisibility());
 A.on(Ut.ShowPerfStatus, () => Ar.deployVisibility());
 A.on(Ut.ShowGameStatus, () => ly.deployVisibility());
 A.on(Ut.MinimapSize, () => {
-    qe.resize(), jt.positioningComponents()
+    qe.resize(), zt.positioningComponents()
 });
 A.on(Ut.LeaderboardSize, () => {
-    Wo.resize(), jt.positioningComponents()
+    Wo.resize(), zt.positioningComponents()
 });
 A.on(Ut.TeamRankingsSize, () => {
-    sp.resize(), jt.positioningComponents()
+    sp.resize(), zt.positioningComponents()
 });
 A.on(Ut.PerfStatusSize, () => {
-    Ar.resize(), jt.positioningComponents()
+    Ar.resize(), zt.positioningComponents()
 });
 A.on(Ut.GameStatusSize, () => {
-    ly.resize(), jt.positioningComponents()
+    ly.resize(), zt.positioningComponents()
 });
 A.on(Ht.CoordsFont, () => Nn.deployCoordsStyle());
 A.on(Ht.CoordsGrid, () => Nn.deployCoordsStyle());
@@ -25173,20 +25183,20 @@ A.on(Ht.BgcTeamRankings, () => sp.deployGraphicsStyle());
 A.on(Ht.BgcPerfPanel, () => Ar.deployGraphicsStyle());
 let jg = performance.now();
 A.on("sendMousePos", e => {
-    U.state != 1 && qe.pointerIn && qe.jumping || e - jg > 15 && (Gt.svrMouseX = jt.mouseX, Gt.svrMouseY = jt.mouseY, at.writer.writeUint8(0).writeFloat32(jt.mouseX).writeFloat32(jt.mouseY), at.send(), jg = e)
+    U.state != 1 && qe.pointerIn && qe.jumping || e - jg > 15 && (Gt.svrMouseX = zt.mouseX, Gt.svrMouseY = zt.mouseY, at.writer.writeUint8(0).writeFloat32(zt.mouseX).writeFloat32(zt.mouseY), at.send(), jg = e)
 });
 A.on("play", () => Wo.nodeList.forEach(e => e.interactive = !1));
 A.on("spectate", () => Wo.nodeList.forEach(e => e.interactive = !0));
 A.on("death", () => Wo.nodeList.forEach(e => e.interactive = !0));
 const Ak = () => {
-    Me.reset(), Ms.forEach(e => e.destroy()), Ms.clear(), Vt.forEach(e => e.id != U.id && e.destroy()), Vt.clear(), U.reset(), jt.reset(), qe.reset(), Nn.reset(), Ar.reset(), A.emit("sendProfile"), A.emit("sendNotice"), setTimeout(() => Ar.ping(), 400)
+    Me.reset(), Ms.forEach(e => e.destroy()), Ms.clear(), Vt.forEach(e => e.id != U.id && e.destroy()), Vt.clear(), U.reset(), zt.reset(), qe.reset(), Nn.reset(), Ar.reset(), A.emit("sendProfile"), A.emit("sendNotice"), setTimeout(() => Ar.ping(), 400)
 };
 A.on("initGame", Ak);
 A.on("clearMap", () => {
     qe.reset(), Nn.reset()
 });
 A.on("refreshGame", () => {
-    Me.reset(), jt.reset()
+    Me.reset(), zt.reset()
 });
 A.on("changeServer", e => {
     at.PAUSE = !0, at.close(1e3), setTimeout(() => {
@@ -25281,7 +25291,7 @@ class Ik extends tp {
         return this.drawCursorLine(), (n ** 2 / 100 >= 42 && a ** 2 / 100 < 42 || a ** 2 / 100 >= 42 && n ** 2 / 100 < 42) && (U.needUpdate = !0), c
     }
     init(i, s, n, r, o, a, l, c) {
-        return super.init(i, s, n, r, o, a, l, c), jt.addChild(this.cursorLine), this
+        return super.init(i, s, n, r, o, a, l, c), zt.addChild(this.cursorLine), this
     }
     deploy() {
         return super.deploy(), this.deployCursorLineVisibility(), this.drawAssistance(), this
@@ -25576,7 +25586,7 @@ class Me {
         a.update_linear(t), a.sync(), a.lastSync = i, a.preUpdate(n, r, o), gn.add(a)
     }
     static sync(t) {
-        U.opUnits.forEach(s => s.sortPlayerCell()), U.update(), Qe.state ? ze.forEach(s => {
+        U.update(), Qe.state ? ze.forEach(s => {
             s.lastSync < Gt.syncStamp && Me.remove(t, s.id), s.syncUpdate && s.syncUpdate()
         }) : (gn.forEach(s => {
             let n;
@@ -26970,7 +26980,7 @@ class Nk extends ep {
         this.opUnits.forEach(i => i.drawCursorLine())
     }
     update() {
-        this.needUpdate && (this.findLargestCell(), this.opUnits.forEach(s => s.deploySplitOrderMarkerStyle()), this.needUpdate = !1), this.toggleCheck && (H.AutoSwitchTab && this.state == 2 && !this.currentOpUnit.cellCount && A.emit("toggleOpUnit"), this.toggleCheck = !1), this.deathCheck && (this.cellCount || this.die(), this.deathCheck = !1);
+        this.opUnits.forEach(s => s.sortPlayerCell()), this.findLargestCell(), this.needUpdate && (this.opUnits.forEach(s => s.deploySplitOrderMarkerStyle()), this.needUpdate = !1), this.toggleCheck && (H.AutoSwitchTab && this.state == 2 && !this.currentOpUnit.cellCount && A.emit("toggleOpUnit"), this.toggleCheck = !1), this.deathCheck && (this.cellCount || this.die(), this.deathCheck = !1);
         const i = vi(0, 40, 500);
         this.opUnits.forEach(s => {
             if (s.DestinationPoint.visible = s.moveMode && s.cellCount > 0 && s == this.currentOpUnit, !s.DestinationPoint.visible) return;
@@ -28478,15 +28488,8 @@ let ne = {
         writer: new oR(!1)
     },
     Bi;
-m8({
-    apiKey: "HvknFp9Rt7OkfnmJDet2",
-    scriptUrlPattern: "https://cwal.io/2kC73thSSS343Uzo/DDUp8vRA6gQqoHcg?apiKey=<apiKey>&version=<version>&loaderVersion=<loaderVersion>",
-    region: "ap",
-    endpoint: "https://cwal.io/2kC73thSSS343Uzo/SaYIi21tonSJPcRv?region=ap"
-}).then(e => e.get()).then(e => {
-    ne.bfp = e.visitorId, setTimeout(() => {
-        A.emit("initFonts")
-    }, 400)
+m8().then(e => e.get()).then(e => {
+    ne.bfp = e.visitorId
 });
 ne.isValid = () => Bi && Bi.readyState == WebSocket.OPEN;
 ne.connect = e => {
@@ -28719,7 +28722,7 @@ function x8(e) {
             const [S, T] = cr(e.readUint16()), L = e.readFloat32(), D = e.readFloat32(), O = e.readUint16();
             _.push([S, T, L, D, O])
         }
-        jt.miniMap.drawEntity(_)
+        zt.miniMap.drawEntity(_)
     }
 
     function m() {
@@ -28729,7 +28732,7 @@ function x8(e) {
             const [L, D] = cr(e.readUint16()), O = e.readFloat32();
             _.push([L, D, O])
         }
-        jt.drawLeaderboard(_);
+        zt.drawLeaderboard(_);
         const k = [],
             S = e.readUint8();
         for (let T = 0; T < S; T++) {
@@ -28737,7 +28740,7 @@ function x8(e) {
                 D = e.readUint16();
             k.push([L, D])
         }
-        jt.drawTeamRankings(k)
+        zt.drawTeamRankings(k)
     }
 
     function g() {
@@ -28760,7 +28763,7 @@ function x8(e) {
     }
 
     function y() {
-        Gt.lastSync = Gt.syncStamp, Gt.syncStamp = i, Me.sync(), jt.miniMap.drawViewport(), jt.gameStatus.updateStatus()
+        Gt.lastSync = Gt.syncStamp, Gt.syncStamp = i, Me.sync(), zt.miniMap.drawViewport(), zt.gameStatus.updateStatus()
     }
     let x = e.readFloat32(),
         v = e.readFloat32();
@@ -28813,7 +28816,7 @@ function w8(e) {
             o = e.readUint8();
         s.push([n, r, o])
     }
-    ne.WORLD = s[0][0], A.emit("setRooms", s)
+    ne.WORLD = s[0][0], A.emit("setRooms", s), A.emit("sendProfile")
 }
 
 function T8(e) {
@@ -28840,7 +28843,7 @@ function T8(e) {
             break
         }
     }
-    t.type = i, jt.drawMap(t);
+    t.type = i, zt.drawMap(t);
     const n = e.readUint16();
     for (let l = 0; l < n; l++) {
         const [c, h] = cr(e.readUint16()), u = e.readStringUTF8(), d = e.readStringUTF8(), f = Pi.joinPlayer(c, h, u, d);
@@ -28865,7 +28868,7 @@ function T8(e) {
         const [c, h] = cr(e.readUint16()), u = e.readFloat32();
         o.push([c, h, u])
     }
-    jt.drawLeaderboard(o), ne.SANDBOX = e.readUint8(), ne.DYNAMIC_COLLISION = e.readUint8(), ne.MAX_OU = e.readUint8(), A.emit("joinSelf", ne.SELF_ID), ne.INFO = e.readStringUTF8(), A.emit("updateChatState"), A.emit("updateWorldInfo"), A.emit("receiveChatMsg", {
+    zt.drawLeaderboard(o), ne.SANDBOX = e.readUint8(), ne.DYNAMIC_COLLISION = e.readUint8(), ne.MAX_OU = e.readUint8(), A.emit("joinSelf", ne.SELF_ID), ne.INFO = e.readStringUTF8(), A.emit("updateChatState"), A.emit("updateWorldInfo"), A.emit("receiveChatMsg", {
         type: 4,
         id: 0,
         msg: `ANNOUNCEMENT: 
@@ -28896,7 +28899,7 @@ function E8(e) {
             break
         }
     }
-    t.type = i, jt.drawMap(t)
+    t.type = i, zt.drawMap(t)
 }
 
 function S8(e) {
@@ -29019,7 +29022,9 @@ function D8({
             S8(t);
             break;
         case 15:
-            C8(t);
+            setTimeout(() => {
+                C8(t)
+            }, H.ExtraLatency);
             break;
         case 16:
             A8(t);
@@ -29060,7 +29065,7 @@ const be = {
             U.state == 1 && (at.writer.writeUint8(1).writeUint8(2), at.send())
         },
         Split: (e = 1) => {
-            U.state == 1 && (U.currentOpUnit.moveMode == 1 && Te.MoveChange.execute().end(), e === 4 && !Te.Pause.executed ? (at.writer.writeUint8(8).writeUint8(2).writeUint8(2).writeUint8(2).writeUint8(2), at.send()) : (at.writer.writeUint8(2).writeFloat32(jt.mouseX).writeFloat32(jt.mouseY), at.send(e)))
+            U.state == 1 && (U.currentOpUnit.moveMode == 1 && Te.MoveChange.execute().end(), e === 4 && !Te.Pause.executed ? (at.writer.writeUint8(8).writeUint8(2).writeUint8(2).writeUint8(2).writeUint8(2), at.send()) : (at.writer.writeUint8(2).writeFloat32(zt.mouseX).writeFloat32(zt.mouseY), at.send(e)))
         },
         Pause: () => {
             U.pause = !0, at.writer.writeUint8(6).writeUint8(1), at.send()
@@ -29086,7 +29091,7 @@ const be = {
             at.writer.writeUint8(3).writeUint8(e | H.StopFeedingAfterSwitchingTab << 4), at.send()
         },
         Signal: () => {
-            at.writer.writeUint8(9).writeFloat32(jt.mouseX).writeFloat32(jt.mouseY).writeUint32(Be(B.Signal[0])), at.send()
+            at.writer.writeUint8(9).writeFloat32(zt.mouseX).writeFloat32(zt.mouseY).writeUint32(Be(B.Signal[0])), at.send()
         },
         ClickMove: () => {
             if (U.state == 1) {
@@ -29094,7 +29099,7 @@ const be = {
                     Te.MoveChange.execute();
                     return
                 }
-                U.pause = !1, U.setDestinationPoint(jt.mouseX, jt.mouseY), at.writer.writeUint8(6).writeUint8(0).writeFloat32(jt.mouseX).writeFloat32(jt.mouseY), at.send()
+                U.pause = !1, U.setDestinationPoint(zt.mouseX, zt.mouseY), at.writer.writeUint8(6).writeUint8(0).writeFloat32(zt.mouseX).writeFloat32(zt.mouseY), at.send()
             }
         },
         MoveChange: () => {
@@ -29105,99 +29110,99 @@ const be = {
         }
     },
     Te = {
-        FeedOnce: new zt(be.FeedOnce),
-        MacroFeed: new zt(() => {
+        FeedOnce: new $t(be.FeedOnce),
+        MacroFeed: new $t(() => {
             be.MacroFeed()
         }, null, () => {
             be.FeedNone()
         }),
-        Split1X: new zt(be.Split),
-        Split2X: new zt(() => be.Split(2)),
-        Split3X: new zt(() => be.Split(3)),
-        Split4X: new zt(() => be.Split(4)),
-        Pause: new zt(() => {
+        Split1X: new $t(be.Split),
+        Split2X: new $t(() => be.Split(2)),
+        Split3X: new $t(() => be.Split(3)),
+        Split4X: new $t(() => be.Split(4)),
+        Pause: new $t(() => {
             const e = Te.Scatter;
             e.executed && clearInterval(e._interval), be.Pause()
         }, null, () => {
             Te.Scatter.executed ? be.Scatter() : Te.TogglePause.executed || be.CancelPauseOrScatter()
         }),
-        TogglePause: new zt(() => {
+        TogglePause: new $t(() => {
             if (Te.TogglePause.executed) return;
             const e = Te.Pause,
                 t = Te.Scatter;
             U.pause && !e.executed ? t.executed ? be.Scatter() : be.CancelPauseOrScatter() : (t.executed && clearInterval(t._interval), be.Pause())
         }, null, null),
-        Scatter: new zt(() => {
+        Scatter: new $t(() => {
             Te.Pause.executed || be.Scatter()
         }, null, () => {
             Te.Pause.executed || be.CancelPauseOrScatter()
         }),
-        SwitchTab: new zt(be.ToggleOpUnit),
-        AutoSwitchTab: new zt(() => {
+        SwitchTab: new $t(be.ToggleOpUnit),
+        AutoSwitchTab: new $t(() => {
             H.AutoSwitchTab ^= 1, A.emit(Ut.AutoSwitchTab)
         }),
-        Toggle4TabMode: new zt(() => {}),
-        Respawn: new zt(() => {}),
-        ShowCursorLine: new zt(() => {
+        Toggle4TabMode: new $t(() => {}),
+        Respawn: new $t(() => {}),
+        ShowCursorLine: new $t(() => {
             H.ShowCursorLine ^= 1, A.emit(Ut.ShowCursorLine)
         }),
-        ShowEnemyHint: new zt(() => {
+        ShowEnemyHint: new $t(() => {
             H.ShowEnemyHint ^= 1, A.emit(Ut.ShowEnemyHint)
         }),
-        ShowMassMarker: new zt(() => {
+        ShowMassMarker: new $t(() => {
             H.ShowMassMarker ^= 1, A.emit(Ut.ShowMassMarker)
         }),
-        ShowSplitOrderMarker: new zt(() => {
+        ShowSplitOrderMarker: new $t(() => {
             H.ShowSplitOrderMarker ^= 1, A.emit(Ut.ShowSplitOrderMarker)
         }),
-        ShowAutosplitAlert: new zt(() => {
+        ShowAutosplitAlert: new $t(() => {
             H.ShowAutosplitAlert ^= 1, A.emit(Ut.ShowAutosplitAlert)
         }),
-        IncreaseMass: new zt(be.GetMass, be.GetMass),
-        DecreaseMass: new zt(be.LoseMass, be.LoseMass),
-        ClearSmallCells: new zt(be.Clear),
-        QuickCapture: new zt(() => {
+        IncreaseMass: new $t(be.GetMass, be.GetMass),
+        DecreaseMass: new $t(be.LoseMass, be.LoseMass),
+        ClearSmallCells: new $t(be.Clear),
+        QuickCapture: new $t(() => {
             A.emit("quickCapture")
         }),
-        ShowNick: new zt(() => {
+        ShowNick: new $t(() => {
             H.ShowNick ^= 1, A.emit(Ut.ShowNick)
         }),
-        ShowMass: new zt(() => {
+        ShowMass: new $t(() => {
             H.ShowMass ^= 1, A.emit(Ut.ShowMass)
         }),
-        ShowSkin: new zt(() => {
+        ShowSkin: new $t(() => {
             H.ShowSkin ^= 1, A.emit(Ut.ShowSkin)
         }),
-        ShowFood: new zt(() => {
+        ShowFood: new $t(() => {
             H.ShowFood ^= 1, A.emit(Ut.ShowFood)
         }),
-        ShowMinimap: new zt(() => {
+        ShowMinimap: new $t(() => {
             H.ShowMinimap ^= 1, A.emit(Ut.ShowMinimap)
         }),
-        ShowLeaderboard: new zt(() => {
+        ShowLeaderboard: new $t(() => {
             H.ShowLeaderboard ^= 1, A.emit(Ut.ShowLeaderboard)
         }),
-        ShowTeamRankings: new zt(() => {
+        ShowTeamRankings: new $t(() => {
             H.ShowTeamRankings ^= 1, A.emit(Ut.ShowTeamRankings)
         }),
-        ShowPerfStatus: new zt(() => {
+        ShowPerfStatus: new $t(() => {
             H.ShowPerfStatus ^= 1, A.emit(Ut.ShowPerfStatus)
         }),
-        ShowGameStatus: new zt(() => {
+        ShowGameStatus: new $t(() => {
             H.ShowGameStatus ^= 1, A.emit(Ut.ShowGameStatus)
         }),
-        ShowChatRoom: new zt(() => {
+        ShowChatRoom: new $t(() => {
             H.ShowChatRoom ^= 1, A.emit(Ut.ShowChatRoom)
         }),
-        ShowReplayBar: new zt(() => {
+        ShowReplayBar: new $t(() => {
             H.ShowReplayBar ^= 1, A.emit(Ut.ShowReplayBar)
         }),
-        Signal: new zt(be.Signal),
-        ClickMove: new zt(be.ClickMove, be.ClickMove, null),
-        MoveChange: new zt(be.MoveChange),
-        Shift: new zt(be.Shift)
+        Signal: new $t(be.Signal),
+        ClickMove: new $t(be.ClickMove, be.ClickMove, null),
+        MoveChange: new $t(be.MoveChange),
+        Shift: new $t(be.Shift)
     },
-    $a = new zt(e => {
+    $a = new $t(e => {
         if (at.writer.writeUint8(4), U.specTarget = null, U.state || (U.state = 2), e == 0) U.specTarget = null, at.writer.writeUint16(0);
         else if (e) {
             if (U.specMode = 1, U.specTarget = Vt.get(e), U.specTarget.isBot) {
@@ -29382,13 +29387,13 @@ class V8 {
     }
     updateUIFrame() {
         let t = performance.now();
-        qe.update(t), Ar.updatePerf(t), this.subRenderer.render(jt), U.drawCursorLine()
+        qe.update(t), Ar.updatePerf(t), this.subRenderer.render(zt), U.drawCursorLine()
     }
     focus() {
         this.view.focus()
     }
     resize() {
-        this.renderer.resize(innerWidth, innerHeight), this.subRenderer.resize(innerWidth, innerHeight), jt.resize(this.screen.width / 2, this.screen.height / 2)
+        this.renderer.resize(innerWidth, innerHeight), this.subRenderer.resize(innerWidth, innerHeight), zt.resize(this.screen.width / 2, this.screen.height / 2)
     }
     zoom({
         deltaY: t
@@ -29415,7 +29420,7 @@ class V8 {
         Qe.state || (t || i) && (Gt.mouseX = t, Gt.mouseY = i)
     }
     destroy() {
-        jt.destroy(), this.renderer.destroy(!0)
+        zt.destroy(), this.renderer.destroy(!0)
     }
 }
 const z8 = {
@@ -29519,7 +29524,7 @@ function Q8(e, t, i, s, n, r) {
         onBlur: t[1] || (t[1] = (...o) => s.close && s.close(...o))
     }, [b("div", {
         class: "select-button",
-        style: $t({
+        style: jt({
             "--t": s.t
         }),
         onClick: t[0] || (t[0] = (...o) => s.open && s.open(...o))
@@ -29530,7 +29535,7 @@ function Q8(e, t, i, s, n, r) {
         width: "25",
         height: "25",
         fill: "#707070",
-        style: $t({
+        style: jt({
             transform: "rotateZ" + s.r
         })
     }, q8, 4)), b("ul", null, [(st(!0), nt(Dt, null, Jt(i.options, (o, a) => (st(), nt("li", {
@@ -29602,15 +29607,15 @@ const eL = {
 function aL(e, t, i, s, n, r) {
     return st(), nt("div", iL, [b("ul", sL, [(st(!0), nt(Dt, null, Jt(i.options, (o, a) => (st(), nt("li", {
         key: a,
-        style: $t({
+        style: jt({
             "background-color": s.checkColor(a)
         }),
         onClick: l => s.change(a)
-    }, [b("div", rL, Ot(o[0]), 1), b("div", oL, Ot(o[1] + "/" + o[2]), 1)], 12, nL))), 128))])], 512)
+    }, [b("div", rL, Ot(o[0]), 1), b("div", oL, Ot(o[1] + "/" + o[2] + "?"), 1)], 12, nL))), 128))])], 512)
 }
 var lL = ue(eL, [
     ["render", aL],
-    ["__scopeId", "data-v-78404f50"]
+    ["__scopeId", "data-v-3a18ce3e"]
 ]);
 const cL = {
         name: "multibox-avatar",
@@ -30073,7 +30078,7 @@ function tO(e, t, i, s, n, r) {
         onClick: u => s.turnTo(h + s.baseProfileListIndex)
     }, [UL, b("div", {
         class: "profile-skin",
-        style: $t({
+        style: jt({
             "background-image": `url(${c[1][0][1]})`
         })
     }, null, 4), b("div", GL, [b("p", null, Ot(c[1][0][0] ? c[1][0][0] : " "), 1)])], 8, BL))), 128))], 512), [
@@ -30451,7 +30456,7 @@ function pO(e, t, i, s, n, r) {
         class: "select-menu rounded-0",
         ref: "menu",
         tabindex: "-1",
-        style: $t({
+        style: jt({
             "--t": s.t
         }),
         onClick: t[0] || (t[0] = (...o) => s.open && s.open(...o)),
@@ -30635,15 +30640,15 @@ const PO = {
 
 function OO(e, t, i, s, n, r) {
     return st(), nt("div", LO, [b("hr", {
-        style: $t({
+        style: jt({
             flex: s.hrLen
         })
     }, null, 4), b("span", {
-        style: $t({
+        style: jt({
             flex: s.spanLen
         })
     }, Ot(i.name), 5), b("hr", {
-        style: $t({
+        style: jt({
             flex: s.hrLen
         })
     }, null, 4)])
@@ -31712,7 +31717,7 @@ function w7(e, t, i, s, n, r) {
         onOnSave: s.save
     }, null, 8, ["onOnReset", "onOnSave"])]), b("div", _7, [b("div", y7, [b("div", b7, [X(a), (st(), nt(Dt, null, Jt(3, (c, h) => X(De("setting-select"), {
         key: h,
-        style: $t({
+        style: jt({
             marginTop: 48 * h + "px"
         }),
         name: s.t.mouse.content[h],
@@ -31721,7 +31726,7 @@ function w7(e, t, i, s, n, r) {
         onChangeVal: u => s.setMouse(h, u)
     }, null, 8, ["style", "name", "selected", "options", "onChangeVal"])), 64))]), b("div", x7, [X(a), (st(), nt(Dt, null, Jt(2, (c, h) => X(De("setting-select"), {
         key: h,
-        style: $t({
+        style: jt({
             marginTop: 48 * h + "px"
         }),
         name: s.t.mouse.content[h + 3],
@@ -33672,7 +33677,7 @@ function MN(e, t, i, s, n, r) {
         onClick: t[0] || (t[0] = (...l) => s.regain && s.regain(...l))
     }, Ot(s.t.default), 1), b("div", wN, [b("div", TN, null, 512)]), b("div", EN, [b("div", {
         class: "color-preview",
-        style: $t(s.style)
+        style: jt(s.style)
     }, null, 4), b("input", {
         class: "rounded-0 form-control menu-input hex-input",
         type: "text",
@@ -33913,7 +33918,7 @@ function QN(e, t, i, s, n, r) {
     }, null, 8, ["tabs"]), b("div", GN, [b("div", HN, [b("div", VN, [b("div", zN, [X(a, {
         name: s.t.display.divide.basic
     }, null, 8, ["name"]), (st(), nt(Dt, null, Jt(6, (d, f) => X(De("picker-button"), {
-        style: $t(s.backgroundColor(0, f)),
+        style: jt(s.backgroundColor(0, f)),
         key: f,
         name: s.t.content[0][f],
         onClick: p => s.coordChange(0, f)
@@ -33925,14 +33930,14 @@ function QN(e, t, i, s, n, r) {
         options: s.t.playerType,
         onChangeVal: s.playerTypeChange
     }, null, 8, ["checked", "options", "onChangeVal"]), (st(), nt(Dt, null, Jt(3, (d, f) => X(De("picker-button"), {
-        style: $t(s.backgroundColor(0, f + 6 + s.playerType * 3)),
+        style: jt(s.backgroundColor(0, f + 6 + s.playerType * 3)),
         key: f + 6 + s.playerType * 3,
         name: s.t.content[0][f + 6],
         onClick: p => s.coordChange(0, f + 6 + s.playerType * 3)
     }, null, 8, ["style", "name", "onClick"])), 64)), X(a, {
         name: s.t.display.divide.assistance
     }, null, 8, ["name"]), (st(), nt(Dt, null, Jt(6, (d, f) => X(De("picker-button"), {
-        style: $t(s.backgroundColor(0, f + 18)),
+        style: jt(s.backgroundColor(0, f + 18)),
         key: f + 18,
         name: s.t.content[0][f + 9],
         onClick: p => s.coordChange(0, f + 18)
@@ -33942,7 +33947,7 @@ function QN(e, t, i, s, n, r) {
     }, null, 8, ["onOnReset"])]), b("div", jN, [b("div", WN, [b("div", XN, [X(a, {
         name: s.t.map.divide.basic
     }, null, 8, ["name"]), (st(), nt(Dt, null, Jt(6, (d, f) => X(De("picker-button"), {
-        style: $t(s.backgroundColor(1, f)),
+        style: jt(s.backgroundColor(1, f)),
         key: f,
         name: s.t.content[1][f],
         onClick: p => s.coordChange(1, f)
@@ -33952,26 +33957,26 @@ function QN(e, t, i, s, n, r) {
     }, null, 8, ["onOnReset"])]), b("div", KN, [b("div", ZN, [b("div", qN, [X(a, {
         name: s.t.HUD.divide.minimap
     }, null, 8, ["name"]), (st(), nt(Dt, null, Jt(7, (d, f) => X(De("picker-button"), {
-        style: $t(s.backgroundColor(2, f)),
+        style: jt(s.backgroundColor(2, f)),
         key: f,
         name: s.t.content[2][f],
         onClick: p => s.coordChange(2, f)
     }, null, 8, ["style", "name", "onClick"])), 64)), X(a, {
         name: s.t.HUD.divide.leaderboard
     }, null, 8, ["name"]), X(h, {
-        style: $t(s.backgroundColor(2, 7)),
+        style: jt(s.backgroundColor(2, 7)),
         name: s.t.content[2][7],
         onClick: t[0] || (t[0] = d => s.coordChange(2, 7))
     }, null, 8, ["style", "name"]), X(a, {
         name: s.t.HUD.divide.teamRankings
     }, null, 8, ["name"]), X(h, {
-        style: $t(s.backgroundColor(2, 8)),
+        style: jt(s.backgroundColor(2, 8)),
         name: s.t.content[2][8],
         onClick: t[1] || (t[1] = d => s.coordChange(2, 8))
     }, null, 8, ["style", "name"]), X(a, {
         name: s.t.HUD.divide.perfPanel
     }, null, 8, ["name"]), X(h, {
-        style: $t(s.backgroundColor(2, 9)),
+        style: jt(s.backgroundColor(2, 9)),
         name: s.t.content[2][9],
         onClick: t[2] || (t[2] = d => s.coordChange(2, 9))
     }, null, 8, ["style", "name"])]), JN]), X(c, {
@@ -34131,7 +34136,7 @@ const v9 = {
 function x9(e, t, i, s, n, r) {
     return st(), nt("p", _9, [b("span", y9, Ot(i.time), 1), ee(b("span", {
         class: "chat-skin",
-        style: $t({
+        style: jt({
             "background-image": i.skin
         }),
         onClick: t[0] || (t[0] = o => s.emitter.emit("checkPlayer", i.player))
@@ -34222,7 +34227,7 @@ function R9(e, t, i, s, n, r) {
         selected: i.selected === a
     }, Ot(o), 9, C9))), 128))]), b("div", {
         class: "select-button",
-        style: $t({
+        style: jt({
             "--t": s.t
         }),
         onClick: t[0] || (t[0] = (...o) => s.open && s.open(...o))
@@ -34233,7 +34238,7 @@ function R9(e, t, i, s, n, r) {
         width: "24",
         height: "24",
         fill: "#707070",
-        style: $t({
+        style: jt({
             transform: "rotateZ" + s.r
         })
     }, I9, 4)), b("ul", null, [(st(!0), nt(Dt, null, Jt(i.options, (o, a) => (st(), nt("li", {
@@ -34262,7 +34267,7 @@ const k9 = {
             const i = ft(null),
                 s = ft(0),
                 n = ft(""),
-                r = new zt(() => {
+                r = new $t(() => {
                     if (s.value ^= 1, !s.value) {
                         if (document.querySelector("canvas").focus(), n.value) {
                             if (at.SANDBOX && n.value == "/tp") {
@@ -34521,7 +34526,7 @@ const ja = ft(0),
             }
         }
     },
-    ln = e => (gs("data-v-82e9339a"), e = e(), vs(), e),
+    ln = e => (gs("data-v-7256ee4c"), e = e(), vs(), e),
     G9 = {
         id: "chat-menu"
     },
@@ -34660,7 +34665,7 @@ function _F(e, t, i, s, n, r) {
     const o = se("notice-input");
     return st(), nt("div", G9, [b("div", H9, [b("div", V9, [b("div", {
         class: "player-avatar",
-        style: $t({
+        style: jt({
             backgroundImage: s.checkSkin(i.player)
         })
     }, null, 4), ee(b("div", z9, [b("button", {
@@ -34721,7 +34726,7 @@ function _F(e, t, i, s, n, r) {
         key: l
     }, [ee(b("div", fF, [b("div", {
         class: "skin-card",
-        style: $t({
+        style: jt({
             "background-image": s.checkSkin(a)
         }),
         onClick: c => s.emitter.emit("checkPlayer", a)
@@ -34732,21 +34737,21 @@ function _F(e, t, i, s, n, r) {
         width: "10",
         height: "10",
         transform: "translate(0,-1.5)",
-        style: $t({
+        style: jt({
             fill: s.getOnlineColor(a)
         })
     }, gF, 4)), b("div", vF, Ot(a.tagNick), 1), b("div", {
         class: "item-latency",
-        style: $t({
+        style: jt({
             color: s.getLatencyColor(a)
         })
     }, Ot(a.latency), 5)], 512), [
-        [ye, a.enableChat]
+        [ye, a.enableChat || a.isSelf]
     ])]))), 128))])])])
 }
 var yF = ue(U9, [
     ["render", _F],
-    ["__scopeId", "data-v-82e9339a"]
+    ["__scopeId", "data-v-7256ee4c"]
 ]);
 const bF = {
         name: "chat-room",
@@ -35109,10 +35114,10 @@ function HF(e, t, i, s, n, r) {
         a = se("chat-input");
     return st(), nt(Dt, null, [ee(b("div", xF, [b("div", {
         id: "dm-notification",
-        style: $t(s.nStyle)
+        style: jt(s.nStyle)
     }, [b("div", {
         class: "notification-avatar",
-        style: $t({
+        style: jt({
             "background-image": s.checkSkin(s.nPlayer)
         })
     }, null, 4), b("div", wF, Ot(s.latestDM), 1)], 4), b("nav", TF, [b("div", {
@@ -35131,7 +35136,7 @@ function HF(e, t, i, s, n, r) {
         class: Ai(s.labelClass(3)),
         id: "clabel-private",
         tabindex: "-1",
-        style: $t({
+        style: jt({
             paddingRight: "1px",
             display: s.showDM ? "block" : "none"
         }),
@@ -35144,19 +35149,19 @@ function HF(e, t, i, s, n, r) {
         width: "24",
         height: "24",
         fill: "#707070",
-        style: $t({
+        style: jt({
             transform: "rotateZ" + s.r,
             opacity: s.dm.length ? null : 0
         })
     }, AF, 4)), b("div", {
         id: "interlocutor-skin",
-        style: $t({
+        style: jt({
             backgroundImage: s.checkSkin(s.interlocutor),
             opacity: s.dm.length ? null : 1
         })
     }, null, 4), b("div", IF, [b("ul", {
         id: "dm-list-inner",
-        style: $t({
+        style: jt({
             marginTop: s.t,
             opacity: s.o
         })
@@ -35165,7 +35170,7 @@ function HF(e, t, i, s, n, r) {
     }, [b("div", MF, [b("div", {
         class: "item-skin",
         title: l.tagNick,
-        style: $t({
+        style: jt({
             "background-image": s.checkSkin(l)
         }),
         onClick: h => s.changeInterlocutor(l)
@@ -35244,12 +35249,12 @@ function $F(e, t, i, s, n, r) {
         onClick: t[0] || (t[0] = o => s.emitter.emit("checkPlayer", s.sender))
     }, [b("div", {
         id: "signal-color",
-        style: $t({
+        style: jt({
             boxShadow: "0 0 16px 4px " + s.hintColor
         })
     }, null, 4), b("div", {
         id: "sender-avatar",
-        style: $t({
+        style: jt({
             backgroundImage: s.checkSkin(s.sender)
         })
     }, null, 4), po(" " + Ot((s.sender ? s.sender.nick : "") + " " + s.t.mouse.signalHint), 1)]), ee(b("div", {
@@ -35257,7 +35262,7 @@ function $F(e, t, i, s, n, r) {
         onClick: t[1] || (t[1] = o => s.emitter.emit("checkPlayer", s.specTarget))
     }, [b("div", {
         id: "spec-avatar",
-        style: $t({
+        style: jt({
             backgroundImage: s.checkSkin(s.specTarget)
         })
     }, null, 4), po(" " + Ot(s.specInfo), 1)], 512), [
@@ -35280,7 +35285,7 @@ const WF = {
     setup() {
         const e = ft(!1),
             t = ft(!0),
-            i = new zt(() => {
+            i = new $t(() => {
                 !t.value && !e.value ? s() : n()
             });
 
@@ -35303,7 +35308,7 @@ const WF = {
         function o() {
             !t.value && H.ShowMenuAfterDeath && (n(), s())
         }
-        const a = new zt(() => {
+        const a = new $t(() => {
             A.emit("quickStart")
         });
 
